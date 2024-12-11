@@ -3,13 +3,10 @@ import { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ViewActorByID from "./scenes/actors/ViewActorByID.jsx";
 import { default as Actors } from "./scenes/actors/index.jsx";
-import Approved from "./scenes/approved/index.jsx";
 import Changepw from "./scenes/auth/changepw/index.jsx";
 import Signup from "./scenes/auth/signup/Signup.jsx";
-import AddNewBanner from "./scenes/changeBanner/AddNewBanner.jsx";
-import EditBanner from "./scenes/changeBanner/EditBanner.jsx";
-import ChangeBanner from "./scenes/changeBanner/index.jsx";
-import ChangeContent from "./scenes/changeContent/index.jsx";
+import AddNewBlog from "./scenes/blogs/AddNewBlogs.jsx";
+import Blogs from "./scenes/blogs/index.jsx";
 import Dashboard from "./scenes/dashboard";
 import EditAdminDetails from "./scenes/dashboard/EditAdminDetails.jsx";
 import ViewDirectorByID from "./scenes/directors/ViewDirector.jsx";
@@ -19,7 +16,6 @@ import Topbar from "./scenes/global/Topbar";
 import EditPackages from "./scenes/packages/EditPckages.jsx";
 import Packages from "./scenes/packages/index.jsx";
 import ViewPending from "./scenes/pending/View.jsx";
-import Pending from "./scenes/pending/index.jsx";
 import ViewProducers from "./scenes/producer/ViewProducer.jsx";
 import Producers from "./scenes/producer/index.jsx";
 import PrivateRoutes from "./scenes/utils/PrivateRoutes.jsx";
@@ -42,12 +38,8 @@ function App() {
               <Route path="/" element={<Signup />} />
               <Route element={<PrivateRoutes />}>
                 <Route path="/dd" element={<Dashboard />} />
-                <Route path="/changeContent" element={<ChangeContent />} />
-                <Route path="/changeBanner" element={<ChangeBanner />} />
-                <Route path="/editBanner/:id" element={<EditBanner />} />
-                <Route path="/add-new-banner" element={<AddNewBanner />} />
-                <Route path="/pending" element={<Pending />} />
-                <Route path="/approved" element={<Approved />} />
+                <Route path="/blog" element={<Blogs />} />
+                <Route path="/addNewBlog" element={<AddNewBlog />} />
 
                 <Route path="/packages" element={<Packages />} />
 

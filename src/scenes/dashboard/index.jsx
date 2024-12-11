@@ -201,7 +201,7 @@ const Dashboard = () => {
               image={adminDetails.image}
               alt={adminDetails.name}
               sx={{
-                objectFit: "cover",
+                objectFit: "contain",
                 borderRadius: "8px",
               }}
             />
@@ -337,7 +337,7 @@ const Dashboard = () => {
                         style={{
                           maxWidth: "200px",
                           maxHeight: "200px",
-                          objectFit: "cover",
+                          objectFit: "contain",
                           border: "2px solid " + colors.blueAccent[500],
                         }}
                       />
