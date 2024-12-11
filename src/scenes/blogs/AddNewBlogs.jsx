@@ -72,8 +72,8 @@ const Form = () => {
 
         setPreviewImage(null);
         setTimeout(() => {
-          navigate("/blogs"); // Redirect to blogs list
-        }, 3000);
+          navigate("/blog"); // Redirect to blogs list
+        }, 2000);
       } else {
         const errorData = await response.json();
         console.error("Error creating blog:", errorData);

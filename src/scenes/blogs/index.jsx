@@ -1,4 +1,5 @@
 import { Delete, Edit } from "@mui/icons-material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Box,
   Button,
@@ -68,8 +69,12 @@ const Index = () => {
     navigate("/addNewBlog");
   };
 
+  const handleView = (id) => {
+    navigate(`/viewBlog/${id}`);
+  };
+
   return (
-    <Box m="20px" height="80vh">
+    <Box m="20px" height="76vh">
       <Box
         display="flex"
         justifyContent="space-between"
@@ -108,6 +113,14 @@ const Index = () => {
               </Typography>
             </CardContent>
             <CardActions>
+              <Button
+                size="small"
+                color="primary"
+                onClick={() => handleView(blog.id)}
+                startIcon={<VisibilityIcon />}
+              >
+                View
+              </Button>
               <Button
                 size="small"
                 color="primary"
