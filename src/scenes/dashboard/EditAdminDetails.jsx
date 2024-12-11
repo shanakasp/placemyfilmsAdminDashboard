@@ -242,7 +242,7 @@ const AdminEditPage = () => {
                           backgroundColor: colors.greenAccent[600],
                         },
                         width: "150px",
-                        height: "50px",
+                        height: "40px",
                       }}
                     >
                       Update

@@ -15,6 +15,7 @@ function ViewBlogById() {
     status: "",
     imageURL: "",
     createdAt: "",
+    updatedAt: "",
   });
 
   useEffect(() => {
@@ -30,7 +31,8 @@ function ViewBlogById() {
       if (responseData.status) {
         const modifiedData = {
           ...responseData.result,
-          createdAt: responseData.result.createdAt.split("T")[0],
+          createdAt: formatDate(responseData.result.createdAt),
+          updatedAt: formatDate(responseData.result.updatedAt),
           status: capitalizeFirstLetter(responseData.result.status),
         };
         setBlogDetails(modifiedData);
@@ -42,8 +44,42 @@ function ViewBlogById() {
     }
   };
 
+  // Format field names to be more readable
+  const formatFieldName = (field) => {
+    const fieldNameMap = {
+      noOfReaders: "Number of Readers",
+      createdAt: "Created At",
+      updatedAt: "Updated At",
+    };
+
+    // If there's a custom translation, use it
+    if (fieldNameMap[field]) {
+      return fieldNameMap[field];
+    }
+
+    return field.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
+      return str.toUpperCase();
+    });
+  };
+
+  // Format date to a more readable format
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  };
+
   const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string ? string.charAt(0).toUpperCase() + string.slice(1) : "";
   };
 
   return (
@@ -53,11 +89,22 @@ function ViewBlogById() {
         <Grid container spacing={2}>
           {/* Displaying the image */}
           <Grid item xs={12} md={4}>
-            <Paper elevation={3}>
+            <Paper
+              elevation={3}
+              sx={{ display: "flex", justifyContent: "center", p: 2 }}
+            >
               <img
                 src={blogDetails.imageURL}
                 alt="Blog"
-                style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+                style={{
+                  width: "100%",
+                  maxWidth: "300px",
+                  height: "auto",
+                  borderRadius: "8px",
+                }}
+                onError={(e) => {
+                  e.target.src = "/path/to/default/image.png";
+                }}
               />
             </Paper>
           </Grid>
@@ -67,22 +114,23 @@ function ViewBlogById() {
             <Grid container spacing={2}>
               {Object.entries(blogDetails).map(([field, value]) => (
                 <React.Fragment key={field}>
-                  {/* Filter out unnecessary fields such as imageURL */}
+                  {/* Filter out imageURL */}
                   {field !== "imageURL" && (
                     <>
                       <Grid item xs={3}>
                         <Typography variant="h6" fontWeight="bold">
-                          {capitalizeFirstLetter(field)}
+                          {formatFieldName(field)}
                         </Typography>
                       </Grid>
-
                       <Grid item xs={1}>
                         <Typography variant="h6" fontWeight="bold">
                           :
                         </Typography>
                       </Grid>
                       <Grid item xs={8}>
-                        <Typography variant="body1">{value}</Typography>
+                        <Typography variant="body1">
+                          {value || "N/A"}
+                        </Typography>
                       </Grid>
                     </>
                   )}

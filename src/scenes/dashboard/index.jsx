@@ -197,7 +197,7 @@ const Dashboard = () => {
           <Grid item xs={12} md={4}>
             <CardMedia
               component="img"
-              height="350"
+              height="200"
               image={adminDetails.image}
               alt={adminDetails.name}
               sx={{
