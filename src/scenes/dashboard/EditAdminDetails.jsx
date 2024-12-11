@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import * as yup from "yup";
 import Header from "../../components/Header";
@@ -23,6 +24,7 @@ const checkoutSchema = yup.object().shape({
 const AdminEditPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
 
   const [adminDetails, setAdminDetails] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -67,7 +69,6 @@ const AdminEditPage = () => {
       formData.append("name", values.name);
       formData.append("email", values.email);
 
-      // Only append image if a new file was selected
       if (selectedImage) {
         formData.append("imageURL", selectedImage);
       }
@@ -87,16 +88,16 @@ const AdminEditPage = () => {
           text: "Your admin details have been updated.",
           icon: "success",
           position: "top",
+        }).then(() => {
+          navigate("/dd");
         });
 
-        // Update local state
         setAdminDetails((prev) => ({
           ...prev,
           name: values.name,
           email: values.email,
         }));
 
-        // Reset selected image
         setSelectedImage(null);
       } else {
         const errorData = await response.json();
@@ -160,7 +161,7 @@ const AdminEditPage = () => {
                   {/* Profile Image Preview */}
                   <Box
                     display="flex"
-                    justifyContent="center"
+                    flexDirection="column"
                     alignItems="center"
                     mb={2}
                   >
@@ -168,12 +169,37 @@ const AdminEditPage = () => {
                       src={previewImage}
                       alt="Profile"
                       style={{
-                        width: "200px",
-                        height: "200px",
+                        width: "250px",
+                        height: "250px",
                         objectFit: "cover",
                         borderRadius: "50%",
                         border: `4px solid ${colors.blueAccent[500]}`,
                       }}
+                    />
+                    <label htmlFor="image-upload">
+                      <Button
+                        variant="contained"
+                        component="span"
+                        sx={{
+                          mt: 2,
+                          backgroundColor: colors.blueAccent[500],
+                          ":hover": {
+                            backgroundColor: colors.blueAccent[600],
+                          },
+                          width: "200px",
+                        }}
+                      >
+                        Change Profile Picture
+                      </Button>
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) =>
+                        handleFileUpload(event, setFieldValue)
+                      }
+                      style={{ display: "none" }}
+                      id="image-upload"
                     />
                   </Box>
 
@@ -205,49 +231,23 @@ const AdminEditPage = () => {
                     helperText={touched.email && errors.email}
                   />
 
-                  {/* Image Upload */}
-                  <Box>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) =>
-                        handleFileUpload(event, setFieldValue)
-                      }
-                      style={{ display: "none" }}
-                      id="image-upload"
-                    />
-                    <label htmlFor="image-upload">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        fullWidth
-                        sx={{
-                          backgroundColor: colors.blueAccent[500],
-                          ":hover": {
-                            backgroundColor: colors.blueAccent[600],
-                          },
-                        }}
-                      >
-                        Change Profile Picture
-                      </Button>
-                    </label>
-                  </Box>
-
                   {/* Submit Button */}
-                  <Button
-                    width="30%"
-                    type="submit"
-                    variant="contained"
-                    sx={{
-                      mt: 2,
-                      backgroundColor: colors.greenAccent[500],
-                      ":hover": {
-                        backgroundColor: colors.greenAccent[600],
-                      },
-                    }}
-                  >
-                    Update Admin Details
-                  </Button>
+                  <Box display="flex" justifyContent="flex-start" mt={2}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{
+                        backgroundColor: colors.greenAccent[500],
+                        ":hover": {
+                          backgroundColor: colors.greenAccent[600],
+                        },
+                        width: "150px",
+                        height: "50px",
+                      }}
+                    >
+                      Update
+                    </Button>
+                  </Box>
                 </Box>
               </Form>
             )}
