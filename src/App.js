@@ -6,6 +6,7 @@ import { default as Actors } from "./scenes/actors/index.jsx";
 import Changepw from "./scenes/auth/changepw/index.jsx";
 import Signup from "./scenes/auth/signup/Signup.jsx";
 import AddNewBlog from "./scenes/blogs/AddNewBlogs.jsx";
+import ViewBlogById from "./scenes/blogs/ViewBlogById.jsx";
 import Blogs from "./scenes/blogs/index.jsx";
 import Dashboard from "./scenes/dashboard";
 import EditAdminDetails from "./scenes/dashboard/EditAdminDetails.jsx";
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/dd" element={<Dashboard />} />
                 <Route path="/blog" element={<Blogs />} />
                 <Route path="/addNewBlog" element={<AddNewBlog />} />
+                <Route path="/viewBlog/:id" element={<ViewBlogById />} />
 
                 <Route path="/packages" element={<Packages />} />
 
