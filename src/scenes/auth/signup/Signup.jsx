@@ -1,22 +1,52 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { CircularProgress, Snackbar } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  CssBaseline,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Snackbar,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import {
+  ThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+} from "@mui/material/styles";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const defaultTheme = createTheme();
+import { loginApi } from "../../../api/ApiConfig";
 
 export default function SignInSide() {
   const navigate = useNavigate();
+
+  // Create a responsive theme
+  const theme = responsiveFontSizes(
+    createTheme({
+      breakpoints: {
+        values: {
+          xs: 0,
+          sm: 600,
+          md: 960,
+          lg: 1280,
+          xl: 1920,
+        },
+      },
+    })
+  );
+
+  // Media query hooks for responsive design
+  const isXsScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const isMdScreen = useMediaQuery(theme.breakpoints.between("md", "lg"));
+  const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
+
+  // State management
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -26,6 +56,39 @@ export default function SignInSide() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Responsive sizing function
+  const getResponsiveSizing = () => {
+    if (isXsScreen)
+      return {
+        paperWidth: "90%",
+        imageWidth: "40%",
+        padding: 2,
+        borderRadius: "12px",
+      };
+    if (isSmScreen)
+      return {
+        paperWidth: "80%",
+        imageWidth: "30%",
+        padding: 3,
+        borderRadius: "14px",
+      };
+    if (isMdScreen)
+      return {
+        paperWidth: "70%",
+        imageWidth: "255%",
+        padding: 4,
+        borderRadius: "16px",
+      };
+    return {
+      paperWidth: "50%",
+      imageWidth: "20%",
+      padding: 4,
+      borderRadius: "16px",
+    };
+  };
+
+  const responsiveSizing = getResponsiveSizing();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -34,12 +97,14 @@ export default function SignInSide() {
       password: data.get("password"),
     };
 
+    // Reset errors
     setError("");
     setEmailError("");
     setPasswordError("");
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    // Validation logic (same as previous implementation)
     if (!formData.email) {
       setEmailError("Email is required");
     } else if (!emailRegex.test(formData.email)) {
@@ -57,62 +122,31 @@ export default function SignInSide() {
     ) {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          "https://webback.opencurtainscasting.com/admin/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
+        const responseData = await loginApi(formData);
+        const token = responseData.token;
 
-        if (response.ok) {
-          const responseData = await response.json();
-          const token = responseData.token;
+        localStorage.setItem("accessToken", token);
 
-          localStorage.setItem("accessToken", token);
+        setSnackbarMessage("Login successful!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
 
-          setSnackbarMessage("Login successful!");
-          setSnackbarSeverity("success");
-          setSnackbarOpen(true);
-
-          setTimeout(() => {
-            navigate("/dd");
-          }, 2000);
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message || "Login failed");
-        }
+        setTimeout(() => {
+          navigate("/dd");
+        }, 2000);
       } catch (error) {
         console.error("Error during login:", error.message);
-        setError("An error occurred during login");
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  const handleChange = (event) => {
-    setEmailError("");
-    setPasswordError("");
-  };
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+  // Other handler functions remain the same as in the previous implementation
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme}>
       <Box
         component="main"
         sx={{
@@ -121,121 +155,145 @@ export default function SignInSide() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          background: "linear-gradient(to bottom, #4AE5A2, #37A5EE)",
+          px: { xs: 2, sm: 3, md: 4 }, // Responsive padding
         }}
       >
         <CssBaseline />
 
         <Box
-          item
-          xs={12}
-          sm={12}
           component={Paper}
           elevation={6}
-          square
           sx={{
-            padding: 4,
-            maxWidth: " 50%",
+            width: responsiveSizing.paperWidth,
+            padding: responsiveSizing.padding,
+            borderRadius: responsiveSizing.borderRadius,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Box
+          <img
+            alt="login image"
+            src={`../../assets/user.png`}
+            style={{
+              width: responsiveSizing.imageWidth,
+              height: "auto",
+              marginBottom: "20px",
+            }}
+          />
+
+          <Typography
+            component="h1"
+            variant={isXsScreen ? "h6" : "h5"}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              mb: 2,
+              mt: 3,
+              fontWeight: "bold",
+              textAlign: "center",
             }}
           >
-            <img
-              alt="login image"
-              src={`../../assets/user.png`}
-              style={{ width: "60%", height: "auto", marginBottom: "20px" }}
+            Sign in
+          </Typography>
+
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{
+              width: "100%",
+              mt: 1,
+              px: { xs: 1, sm: 2, md: 3 }, // Responsive form padding
+            }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              error={!!emailError}
+              helperText={emailError}
+              onChange={() => {
+                setEmailError("");
+                setPasswordError("");
+              }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              autoComplete="current-password"
+              error={!!passwordError}
+              helperText={passwordError}
+              onChange={() => {
+                setEmailError("");
+                setPasswordError("");
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      onMouseDown={(event) => event.preventDefault()}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
-            <Typography
-              component="h1"
-              variant="h5"
-              sx={{ mb: 2, mt: 3, fontWeight: "bold" }}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{
+                mt: 3,
+                mb: 2,
+                height: { xs: 48, sm: 52, md: 56 },
+              }}
+              disabled={isLoading}
             >
-              Sign in
-            </Typography>
-
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
-            >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                error={!!emailError}
-                helperText={emailError}
-                onChange={handleChange}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                id="password"
-                autoComplete="current-password"
-                error={!!passwordError}
-                helperText={passwordError}
-                onChange={handleChange}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2, height: 56 }}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-
-              {error && (
-                <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-                  {error}
-                </Typography>
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Sign In"
               )}
-            </Box>
+            </Button>
+
+            {error && (
+              <Typography
+                variant="body2"
+                color="error"
+                sx={{
+                  mt: 2,
+                  textAlign: "center",
+                }}
+              >
+                {error}
+              </Typography>
+            )}
           </Box>
         </Box>
 
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={2000}
-          onClose={handleSnackbarClose}
+          onClose={() => setSnackbarOpen(false)}
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           sx={{ borderRadius: 10 }}
         >
           <MuiAlert
-            onClose={handleSnackbarClose}
+            onClose={() => setSnackbarOpen(false)}
             severity={snackbarSeverity}
             variant="filled"
             sx={{ width: "100%" }}

@@ -50,7 +50,7 @@ const Topbar = () => {
           fontWeight="bold"
           sx={{ m: "10px " }}
         >
-          Open Curtains Casting
+          Place My Films
         </Typography>
       </Box>
 
