@@ -1,11 +1,6 @@
 import CameraRollOutlinedIcon from "@mui/icons-material/CameraRollOutlined";
-import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
-import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
-import SubscriptionIcon from "@mui/icons-material/SubscriptionsOutlined"; // Subscription packages icon
-import CrewOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined"; // Crew icon
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
@@ -118,19 +113,19 @@ const Sidebar = () => {
                 fontWeight: "bold",
               }}
             >
-              Castings
+              Blogs Area
             </Typography>
-            <Item
+            {/* <Item
               title="Pending Castings"
               to="/pending"
               icon={<GroupOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             <Item
-              title="Approved Castings"
-              to="/approved"
-              icon={<GroupAddOutlinedIcon />}
+              title="Blogs"
+              to="/blog"
+              icon={<CameraRollOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -145,7 +140,7 @@ const Sidebar = () => {
             >
               Users
             </Typography>
-            <Item
+            {/* <Item
               title="Actors"
               to="/actors"
               icon={<PeopleOutlineIcon />} // New icon for actors
@@ -172,8 +167,8 @@ const Sidebar = () => {
               icon={<CrewOutlinedIcon />} // New icon for crew
               selected={selected}
               setSelected={setSelected}
-            />
-
+            /> */}
+            {/* 
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -190,7 +185,7 @@ const Sidebar = () => {
               icon={<SubscriptionIcon />} // New icon for subscription packages
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
           </Box>
         </Menu>
       </ProSidebar>

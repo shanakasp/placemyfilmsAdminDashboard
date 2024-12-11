@@ -7,8 +7,8 @@ import {
   InputAdornment,
   Snackbar,
   TextField,
+  useTheme,
 } from "@mui/material";
-import { useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
 import { Formik } from "formik";
@@ -32,10 +32,10 @@ const CreateNewUser = () => {
   const handleFormSubmit = async (values) => {
     const token = localStorage.getItem("accessToken");
 
-    const id = localStorage.getItem("id");
+    const id = localStorage.getItem("AdminId");
     try {
       const response = await axios.post(
-        `https://webback.opencurtainscasting.com/user/changePassword/${id}`,
+        `https://backend.placemyfilms.com/admin/changePassword/${id}`,
         {
           oldPassword: values.currentPassword,
           newPassword: values.newPassword,

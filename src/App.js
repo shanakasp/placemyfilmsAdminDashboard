@@ -11,6 +11,7 @@ import EditBanner from "./scenes/changeBanner/EditBanner.jsx";
 import ChangeBanner from "./scenes/changeBanner/index.jsx";
 import ChangeContent from "./scenes/changeContent/index.jsx";
 import Dashboard from "./scenes/dashboard";
+import EditAdminDetails from "./scenes/dashboard/EditAdminDetails.jsx";
 import ViewDirectorByID from "./scenes/directors/ViewDirector.jsx";
 import Directors from "./scenes/directors/index.jsx";
 import Sidebar from "./scenes/global/Sidebar";
@@ -71,6 +72,10 @@ function App() {
                 <Route path="/producer/:id" element={<ViewProducers />} />
 
                 <Route path="/changepw" element={<Changepw />} />
+                <Route
+                  path="/editAdminDetails"
+                  element={<EditAdminDetails />}
+                />
               </Route>
             </Routes>
           </main>

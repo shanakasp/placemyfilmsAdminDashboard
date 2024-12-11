@@ -25,3 +25,31 @@ export const loginApi = async (formData) => {
     }
   }
 };
+
+export const changePasswordApi = async (
+  id,
+  token,
+  oldPassword,
+  newPassword
+) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/admin/changePassword/${id}`,
+      { oldPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(
+        error.response.data.message || "Failed to change password."
+      );
+    } else {
+      throw new Error("An error occurred during the request.");
+    }
+  }
+};
