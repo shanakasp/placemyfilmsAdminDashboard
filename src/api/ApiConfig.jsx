@@ -9,6 +9,13 @@ export const loginApi = async (formData) => {
         "Content-Type": "application/json",
       },
     });
+    console.log(response.data.result);
+    const { AdminId, token } = response.data.result;
+
+    // Save AdminId and token to localStorage
+    localStorage.setItem("AdminId", AdminId);
+    localStorage.setItem("token", token);
+
     return response.data;
   } catch (error) {
     if (error.response) {

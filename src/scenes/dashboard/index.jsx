@@ -15,22 +15,24 @@ const Dashboard = () => {
 
         {/* Buttons container */}
         <Box display="flex" gap="10px" mt="20px">
-          <Link to="/changeContent">
+          <Link to="/changepw">
             <Button
               sx={{
                 backgroundColor: colors.greenAccent[500],
-                color: colors.grey[100],
+                ":hover": {
+                  backgroundColor: colors.greenAccent[600],
+                },
                 fontSize: "14px",
                 fontWeight: "bold",
                 padding: "10px 20px",
               }}
             >
               <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-              Change Content
+              Change Password
             </Button>
           </Link>
 
-          <Link to="/changeBanner">
+          {/* <Link to="/changeBanner">
             <Button
               sx={{
                 backgroundColor: colors.greenAccent[500],
@@ -43,7 +45,7 @@ const Dashboard = () => {
               <DownloadOutlinedIcon sx={{ mr: "10px" }} />
               Change Banner
             </Button>
-          </Link>
+          </Link> */}
         </Box>
       </Box>
     </Box>

@@ -8,6 +8,7 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
+import { useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
 import { Formik } from "formik";
@@ -15,9 +16,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Header from "../../../components/Header";
-
+import { tokens } from "../../../theme";
 const CreateNewUser = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
@@ -25,9 +27,11 @@ const CreateNewUser = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const colors = tokens(theme.palette.mode);
 
   const handleFormSubmit = async (values) => {
     const token = localStorage.getItem("accessToken");
+
     const id = localStorage.getItem("id");
     try {
       const response = await axios.post(
@@ -194,12 +198,12 @@ const CreateNewUser = () => {
                     type="submit"
                     variant="contained"
                     sx={{
-                      backgroundColor: "#6870fa",
+                      backgroundColor: colors.greenAccent[500],
+                      ":hover": {
+                        backgroundColor: colors.greenAccent[600],
+                      },
                       color: "white",
                       fontSize: "16px",
-                      "&:hover": {
-                        backgroundColor: "#3e4396",
-                      },
                     }}
                   >
                     Update

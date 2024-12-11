@@ -156,7 +156,7 @@ export default function SignInSide() {
           alignItems: "center",
           justifyContent: "center",
           background: "linear-gradient(to bottom, #4AE5A2, #37A5EE)",
-          px: { xs: 2, sm: 3, md: 4 }, // Responsive padding
+          px: { xs: 2, sm: 3, md: 4 },
         }}
       >
         <CssBaseline />
