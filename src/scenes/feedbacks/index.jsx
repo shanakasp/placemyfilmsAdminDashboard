@@ -1,16 +1,16 @@
 import { Visibility as VisibilityIcon } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import Header from "../../../components/Header";
-import { tokens } from "../../../theme";
+import Header from "../../components/Header";
+import { tokens } from "../../theme";
 
 const FormsUser = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const colors = tokens(theme.palette.mode);
   const token = localStorage.getItem("accessToken");
   const [data, setData] = useState([]);
@@ -19,30 +19,24 @@ const FormsUser = () => {
     fetchData();
   }, []);
 
-  const handleEditClick = async (id) => {
-    console.log(`Clicked`);
-  };
-
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "https://hitprojback.hasthiya.org/project/getAll",
+        "https://backend.placemyfilms.com/feedback/getAllFeedbacks",
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+
       if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.statusText}`);
       }
+
       const responseData = await response.json();
 
-      if (
-        !responseData.status ||
-        !responseData.data ||
-        !Array.isArray(responseData.data.data)
-      ) {
+      if (!responseData.status || !Array.isArray(responseData.result)) {
         throw new Error("Invalid response data format");
       }
 
@@ -61,27 +55,28 @@ const FormsUser = () => {
         return `${formattedDate} ${formattedTime}`;
       };
 
-      const mappedData = responseData.data.data.map((item) => ({
+      const mappedData = responseData.result.map((item) => ({
         id: item.id,
-        title: item.title,
+        blogId: item.blogId,
         description: item.description,
-        start_date: formatDate(item.start_date),
-        end_date: formatDate(item.end_date),
-        status: item.status,
+        feedBackType: item.feedBackType,
+        createdAt: formatDate(item.createdAt),
       }));
 
-      const sortedData = mappedData.sort((a, b) => b.id - a.id);
-
-      setData(sortedData);
+      setData(mappedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  const handleViewClick = async (id) => {
+    navigate(`/feedback/${id}`);
+  };
+
   const handleDeleteClick = async (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this project!",
+      text: "Once deleted, you will not be able to recover this feedback!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -91,7 +86,7 @@ const FormsUser = () => {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `https://hitprojback.hasthiya.org/project/delete/${id}`,
+            `https://backend.placemyfilms.com/feedback/deleteFeedbackByID/${id}`,
             {
               method: "DELETE",
               headers: {
@@ -100,15 +95,15 @@ const FormsUser = () => {
             }
           );
           if (!response.ok) {
-            throw new Error("Failed to delete project");
+            throw new Error("Failed to delete feedback");
           }
 
           const updatedData = data.filter((item) => item.id !== id);
           setData(updatedData);
-          Swal.fire("Deleted!", "Your project has been deleted.", "success");
+          Swal.fire("Deleted!", "Your feedback has been deleted.", "success");
         } catch (error) {
-          console.error("Error deleting project:", error);
-          Swal.fire("Error!", "Failed to delete project.", "error");
+          console.error("Error deleting feedback:", error);
+          Swal.fire("Error!", "Failed to delete feedback.", "error");
         }
       }
     });
@@ -116,30 +111,20 @@ const FormsUser = () => {
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "title", headerName: "Title", flex: 1 },
+    { field: "blogId", headerName: "Blog ID", flex: 0.5 },
     { field: "description", headerName: "Description", flex: 1 },
-    { field: "start_date", headerName: "Start Date", flex: 1 },
-    { field: "end_date", headerName: "End Date", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1.2 },
+    { field: "feedBackType", headerName: "Feedback Type", flex: 0.8 },
+    { field: "createdAt", headerName: "Created At", flex: 1 },
     {
       field: "Actions",
       headerName: "Actions",
-      flex: 0.7,
+      flex: 0.5,
       renderCell: (params) => (
         <Box>
           <Tooltip title="View">
-            <Link to={`/project/viewproject/${params.row.id}`}>
-              <IconButton>
-                <VisibilityIcon />
-              </IconButton>
-            </Link>
-          </Tooltip>
-          <Tooltip title="Edit">
-            <Link to={`/project/editproject/${params.row.id}`}>
-              <IconButton>
-                <EditIcon />
-              </IconButton>
-            </Link>
+            <IconButton onClick={() => handleViewClick(params.row.id)}>
+              <VisibilityIcon />
+            </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
             <IconButton onClick={() => handleDeleteClick(params.row.id)}>
@@ -151,19 +136,14 @@ const FormsUser = () => {
     },
   ];
 
-  const getRowClassName = (params) => {
-    return "row-divider";
-  };
-
   return (
     <Box m="20px">
       <Header
-        title="Project Logs"
-        subtitle="All the saved projects in the system."
+        title="Feedback Logs"
+        subtitle="All feedbacks recorded in the system."
       />
 
       <Box
-        m="0 0 0 0"
         height="65vh"
         sx={{
           "& .MuiDataGrid-root": {
@@ -172,9 +152,6 @@ const FormsUser = () => {
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.green[300],
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[800],
@@ -193,16 +170,12 @@ const FormsUser = () => {
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `${colors.grey[100]} !important`,
           },
-          "& .row-divider": {
-            borderBottom: `1px solid rgba(0, 0, 0, 0.1)`,
-          },
         }}
       >
         <DataGrid
           rows={data}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
-          getRowClassName={getRowClassName}
         />
       </Box>
     </Box>

@@ -130,6 +130,28 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
+            <Item
+              title="Packages"
+              to="/packages"
+              icon={<CameraRollOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Payments"
+              to="/payments"
+              icon={<CameraRollOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Feedbacks"
+              to="/feedback"
+              icon={<CameraRollOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             <Typography
               variant="h6"
               color={colors.grey[300]}

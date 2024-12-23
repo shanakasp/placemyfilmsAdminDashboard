@@ -13,10 +13,15 @@ import Dashboard from "./scenes/dashboard";
 import EditAdminDetails from "./scenes/dashboard/EditAdminDetails.jsx";
 import ViewDirectorByID from "./scenes/directors/ViewDirector.jsx";
 import Directors from "./scenes/directors/index.jsx";
+import ViewFeedbackByID from "./scenes/feedbacks/ViewFeedbacksById.jsx";
+import Feedback from "./scenes/feedbacks/index.jsx";
 import Sidebar from "./scenes/global/Sidebar";
 import Topbar from "./scenes/global/Topbar";
+import AddPackages from "./scenes/packages/AddPackages.jsx";
 import EditPackages from "./scenes/packages/EditPckages.jsx";
 import Packages from "./scenes/packages/index.jsx";
+import ViewPaymentDetails from "./scenes/payments/ViewPaymentById.jsx";
+import Payments from "./scenes/payments/index.jsx";
 import ViewPending from "./scenes/pending/View.jsx";
 import ViewProducers from "./scenes/producer/ViewProducer.jsx";
 import Producers from "./scenes/producer/index.jsx";
@@ -47,10 +52,20 @@ function App() {
 
                 <Route path="/packages" element={<Packages />} />
 
+                <Route path="/payments" element={<Payments />} />
+                <Route
+                  path="/payment/viewpayment/:id"
+                  element={<ViewPaymentDetails />}
+                />
+
+                <Route path="/feedback" element={<Feedback />} />
+                <Route path="/feedback/:id" element={<ViewFeedbackByID />} />
+
                 <Route
                   path="/subscription/edit/:id"
                   element={<EditPackages />}
                 />
+                <Route path="/subscription/add" element={<AddPackages />} />
 
                 <Route path="/actors" element={<Actors />} />
                 <Route path="/directors" element={<Directors />} />

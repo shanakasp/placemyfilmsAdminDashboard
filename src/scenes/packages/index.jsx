@@ -1,9 +1,7 @@
+import { AddCircleOutline, Delete } from "@mui/icons-material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import CategoryIcon from "@mui/icons-material/Category";
-import CountertopsIcon from "@mui/icons-material/Countertops";
 import EditIcon from "@mui/icons-material/Edit";
-import StripeIcon from "@mui/icons-material/Payment";
 import {
   Box,
   Button,
@@ -18,6 +16,7 @@ import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Make sure to import SweetAlert2
 import Header from "../../components/Header";
 
 const Index = () => {
@@ -25,6 +24,8 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const theme = useTheme();
+  const token = "your-jwt-token"; // Make sure to define the token properly
+
   // Custom styles object
   const styles = {
     rootContainer: {
@@ -131,9 +132,21 @@ const Index = () => {
       marginTop: "16px",
     },
     editButton: {
-      width: "100%",
+      width: "30%",
       marginTop: "24px",
-      padding: "12px",
+      padding: "10px",
+      marginRight: "20px",
+      borderRadius: "8px",
+      fontSize: "12px",
+      fontWeight: 600,
+      textTransform: "none",
+      // backgroundColor: theme.palette.primary.main,
+      backgroundColor: "#32E3BD",
+    },
+    addButton: {
+      width: "20%",
+      marginTop: "24px",
+      padding: "10px",
       borderRadius: "8px",
       fontSize: "14px",
       fontWeight: 600,
@@ -148,12 +161,13 @@ const Index = () => {
       marginRight: "8px",
     },
   };
+
   useEffect(() => {
     const fetchPackages = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          "https://webback.opencurtainscasting.com/subscriptionPackage/getAll"
+          "https://backend.placemyfilms.com/payapi/getAllPackage"
         );
         if (response.data.status) {
           setPackages(response.data.result);
@@ -170,6 +184,46 @@ const Index = () => {
 
   const handleEdit = (id) => {
     navigate(`/subscription/edit/${id}`);
+  };
+
+  const handleDeleteClick = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this package!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(
+            `https://backend.placemyfilms.com/payapi/deletePackageByID/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to delete package");
+          }
+
+          const updatedPackages = packages.filter((pkg) => pkg.id !== id);
+          setPackages(updatedPackages);
+          Swal.fire("Deleted!", "Your package has been deleted.", "success");
+        } catch (error) {
+          console.error("Error deleting package:", error);
+          Swal.fire("Error!", "Failed to delete package.", "error");
+        }
+      }
+    });
+  };
+
+  const handleAdd = () => {
+    navigate(`/subscription/add`);
   };
 
   const formatDate = (dateString) => {
@@ -194,76 +248,53 @@ const Index = () => {
       </Box>
     );
   }
+
   return (
     <Box sx={styles.rootContainer}>
       <Box sx={styles.pageContainer}>
-        <Header
-          title="SUBSCRIPTION PACKAGES"
-          subtitle="Manage and monitor your subscription packages"
-        />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "16px", // optional spacing below the row
+          }}
+        >
+          <Header
+            title="SUBSCRIPTION PACKAGES"
+            subtitle="Manage and monitor your subscription packages"
+          />
+          <Button
+            sx={styles.addButton}
+            onClick={handleAdd}
+            startIcon={<AddCircleOutline />}
+          >
+            Add New Package
+          </Button>
+        </Box>
+
         <Box sx={styles.scrollableContent}>
           <Box sx={styles.cardsContainer}>
             {packages.map((pkg) => (
               <Fade in={true} timeout={500} key={pkg.id}>
                 <Card sx={styles.card}>
                   <CardContent sx={styles.cardContent}>
-                    {/* Card content remains the same */}
                     <Box sx={styles.headerSection}>
                       <Box sx={styles.titleRow}>
                         <Typography sx={styles.title}>{pkg.title}</Typography>
-                        <Chip
-                          label={pkg.type}
-                          color={pkg.type === "calls" ? "primary" : "secondary"}
-                          size="small"
-                        />
+                        <Chip label={pkg.status} color="primary" size="small" />
                       </Box>
 
                       <Typography sx={styles.price} component="div">
                         <AttachMoneyIcon />
-                        {pkg.price}
+                        {pkg.amount}
                       </Typography>
                     </Box>
 
                     <Box sx={styles.infoRow}>
-                      <CategoryIcon sx={styles.infoIcon} />
                       <Typography sx={styles.infoText}>
-                        Type:{" "}
-                        {pkg.type.charAt(0).toUpperCase() + pkg.type.slice(1)}
+                        {pkg.description}
                       </Typography>
-                    </Box>
-
-                    <Box sx={styles.infoRow}>
-                      <CountertopsIcon sx={styles.infoIcon} />
-                      <Typography sx={styles.infoText}>
-                        Count: {pkg.count}
-                      </Typography>
-                    </Box>
-
-                    <Box sx={styles.stripeSection}>
-                      <Box sx={styles.infoRow}>
-                        <StripeIcon sx={styles.infoIcon} />
-                        <Tooltip
-                          title={pkg.stripe_price_object_id}
-                          placement="top"
-                        >
-                          <Typography sx={styles.infoText} noWrap>
-                            Price ID:{" "}
-                            {pkg.stripe_price_object_id.substring(0, 15)}...
-                          </Typography>
-                        </Tooltip>
-                      </Box>
-                      <Box sx={styles.infoRow}>
-                        <StripeIcon sx={styles.infoIcon} />
-                        <Tooltip
-                          title={pkg.stripe_product_object_id}
-                          placement="top"
-                        >
-                          <Typography sx={styles.infoText} noWrap>
-                            Product ID:{" "}
-                            {pkg.stripe_product_object_id.substring(0, 15)}...
-                          </Typography>
-                        </Tooltip>
-                      </Box>
                     </Box>
 
                     <Box
@@ -277,14 +308,6 @@ const Index = () => {
                           size="small"
                         />
                       </Tooltip>
-                      <Tooltip title="Updated At" placement="top">
-                        <Chip
-                          icon={<AccessTimeIcon />}
-                          label={formatDate(pkg.updatedAt)}
-                          sx={styles.timeStampChip}
-                          size="small"
-                        />
-                      </Tooltip>
                     </Box>
 
                     <Button
@@ -293,6 +316,14 @@ const Index = () => {
                       startIcon={<EditIcon />}
                     >
                       Edit Package
+                    </Button>
+
+                    <Button
+                      sx={styles.editButton}
+                      onClick={() => handleDeleteClick(pkg.id)}
+                      startIcon={<Delete />}
+                    >
+                      Delete Package
                     </Button>
                   </CardContent>
                 </Card>

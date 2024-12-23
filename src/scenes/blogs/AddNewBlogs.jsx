@@ -184,6 +184,7 @@ const Form = () => {
                 fullWidth
                 variant="filled"
                 label="Number of Readers"
+                type="number"
                 name="noOfReaders"
                 value={values.noOfReaders}
                 onChange={handleChange}
@@ -250,8 +251,26 @@ const Form = () => {
                   <img
                     src={previewImage}
                     alt="Preview"
-                    style={{ width: 200, height: 200, gridColumn: "span 4" }}
+                    style={{
+                      width: 200,
+                      height: 200,
+                      gridColumn: "span 4",
+                      marginTop: "10px",
+                    }}
                   />
+                )}
+
+                {/* Validation error for the image */}
+                {touched["blog-image"] && errors["blog-image"] && (
+                  <Box
+                    sx={{
+                      color: "red",
+                      fontSize: "0.875rem",
+                      marginTop: "8px",
+                    }}
+                  >
+                    {errors["blog-image"]}
+                  </Box>
                 )}
               </Box>
             </Box>
@@ -298,7 +317,7 @@ const checkoutSchema = yup.object().shape({
   noOfReaders: yup.number().required("Number of readers is required"),
   type: yup.string().required("Type is required"),
   status: yup.string().required("Status is required"),
-  "blog-image": yup.mixed().required("Blog image is required"),
+  "blog-image": yup.mixed().nullable().required("Blog image is required"),
 });
 
 export default Form;

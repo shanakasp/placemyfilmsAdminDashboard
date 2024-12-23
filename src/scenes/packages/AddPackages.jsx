@@ -8,89 +8,55 @@ import {
   TextField,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import axios from "axios";
 import { Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Header from "../../components/Header";
 
 const Form = () => {
-  const { id } = useParams(); // Retrieve the package ID from the URL
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [initialValues, setInitialValues] = useState(null);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("accessToken"); // Retrieve the token from local storage
-
-  // Fetch the package details by ID
-  useEffect(() => {
-    const fetchSubscriptionPackage = async () => {
-      try {
-        const response = await axios.get(
-          `https://backend.placemyfilms.com/payapi/getPackageById/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const packageData = response.data.result;
-        setInitialValues({
-          title: packageData.title,
-          description: packageData.description,
-          amount: packageData.amount,
-          status: packageData.status,
-        });
-      } catch (error) {
-        console.error("Error fetching subscription package data:", error);
-        setSnackbarMessage("Error fetching package data: " + error.message);
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
-      }
-    };
-
-    fetchSubscriptionPackage();
-  }, [token, id]);
-
-  // Handle form submission
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      const requestData = {
-        title: values.title,
-        description: values.description,
-        amount: values.amount,
-        status: values.status,
-      };
+      const token = localStorage.getItem("accessToken");
 
-      const response = await axios.put(
-        `https://backend.placemyfilms.com/payapi/updatePackageByID/${id}`,
-        requestData,
+      const response = await fetch(
+        "https://backend.placemyfilms.com/payapi/createPackage",
         {
+          method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify(values),
         }
       );
 
-      if (response.status === 200) {
-        setSnackbarMessage("Subscription package updated successfully!");
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("Package created successfully:", responseData);
+        setSnackbarMessage("Package created successfully!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
 
         setTimeout(() => {
           navigate("/packages");
-        }, 2000);
+        }, 3000);
       } else {
-        throw new Error(response.data.message || "Failed to update package");
+        const errorData = await response.json();
+        console.error("Error creating package:", errorData);
+        setSnackbarMessage("Error creating package: " + errorData.message);
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       }
     } catch (error) {
-      console.error("Error updating subscription package:", error);
-      setSnackbarMessage("Error updating package: " + error.message);
+      console.error("Error creating package:", error);
+      setSnackbarMessage("Error creating package: " + error.message);
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
@@ -100,23 +66,19 @@ const Form = () => {
     setSnackbarOpen(false);
   };
 
-  // Show a loading spinner if the initial values are not loaded
-  if (!initialValues) {
-    return <CircularProgress />;
-  }
-
   return (
-    <Box m="20px" height="70vh" overflow="auto" paddingRight="20px">
-      <Header
-        title="EDIT SUBSCRIPTION PACKAGE"
-        subtitle="Edit package details"
-      />
+    <Box m="20px" height="80vh" overflow="auto" paddingRight="20px">
+      <Header title="CREATE NEW PACKAGE" subtitle="Create a package" />
 
       <Formik
-        initialValues={initialValues}
+        initialValues={{
+          title: "",
+          description: "",
+          amount: "",
+          status: "",
+        }}
         validationSchema={checkoutSchema}
         onSubmit={handleFormSubmit}
-        enableReinitialize={true} // Ensure form is reinitialized when initial values change
       >
         {({
           values,
@@ -124,8 +86,8 @@ const Form = () => {
           touched,
           handleBlur,
           handleChange,
-          isSubmitting,
           handleSubmit,
+          isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -150,7 +112,9 @@ const Form = () => {
               />
               <TextField
                 fullWidth
+                multiline
                 variant="filled"
+                rows={4}
                 label="Description"
                 name="description"
                 value={values.description}
@@ -199,7 +163,7 @@ const Form = () => {
                 disabled={isSubmitting}
                 startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               >
-                <strong>Update Package</strong>
+                <strong>Create Package</strong>
               </Button>
             </Box>
           </form>
@@ -225,12 +189,14 @@ const Form = () => {
   );
 };
 
-// Validation schema for the form
 const checkoutSchema = yup.object().shape({
-  title: yup.string().required("Required"),
-  description: yup.string().required("Required"),
-  amount: yup.number().required("Required").positive("Amount must be positive"),
-  status: yup.string().required("Required"),
+  title: yup.string().required("Title is required"),
+  description: yup.string().required("Description is required"),
+  amount: yup
+    .number()
+    .required("Amount is required")
+    .positive("Amount must be positive"),
+  status: yup.string().required("Status is required"),
 });
 
 export default Form;
