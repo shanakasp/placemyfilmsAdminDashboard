@@ -5,6 +5,7 @@ import ViewActorByID from "./scenes/actors/ViewActorByID.jsx";
 import { default as Actors } from "./scenes/actors/index.jsx";
 import Changepw from "./scenes/auth/changepw/index.jsx";
 import Signup from "./scenes/auth/signup/Signup.jsx";
+import Billings from "./scenes/billings/index.jsx";
 import AddNewBlog from "./scenes/blogs/AddNewBlogs.jsx";
 import EditBlog from "./scenes/blogs/EditBlogs.jsx";
 import ViewBlogById from "./scenes/blogs/ViewBlogById.jsx";
@@ -75,6 +76,8 @@ function App() {
                 <Route path="/coupon/view/:id" element={<ViewCoupon />} />
                 <Route path="/coupon/edit/:id" element={<EditCoupon />} />
                 <Route path="/coupon/add" element={<AddCoupon />} />
+
+                <Route path="/billings" element={<Billings />} />
 
                 <Route path="/actors" element={<Actors />} />
                 <Route path="/directors" element={<Directors />} />
