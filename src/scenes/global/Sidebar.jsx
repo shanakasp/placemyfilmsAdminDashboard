@@ -8,6 +8,13 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { Link } from "react-router-dom";
 import { tokens } from "../../theme";
 
+import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
+
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+
+import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
+import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -16,6 +23,8 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       active={selected === title}
       style={{
         color: colors.grey[100],
+        marginBottom: "15px", // Add margin-bottom
+        marginTop: "10px", // Add margin-top if needed
       }}
       onClick={() => setSelected(title)}
       icon={icon}
@@ -59,7 +68,8 @@ const Sidebar = () => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
-              margin: "20px 0 20px 0",
+              marginBottom: "15px", // Add margin-bottom
+              marginTop: "10px", // Add margin-top if needed
               color: colors.grey[100],
             }}
           >
@@ -129,92 +139,34 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
             <Item
               title="Packages"
               to="/packages"
-              icon={<CameraRollOutlinedIcon />}
+              icon={<ViewListOutlinedIcon />} // New icon for Packages
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Payments"
               to="/payments"
-              icon={<CameraRollOutlinedIcon />}
+              icon={<PaymentOutlinedIcon />} // New icon for Payments
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Feedbacks"
               to="/feedback"
-              icon={<CameraRollOutlinedIcon />}
+              icon={<FeedbackOutlinedIcon />} // New icon for Feedbacks
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Coupon"
               to="/coupons"
-              icon={<CameraRollOutlinedIcon />}
+              icon={<LocalOfferOutlinedIcon />} // New icon for Coupons
               selected={selected}
               setSelected={setSelected}
             />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{
-                m: "25px 0 5px 20px",
-                fontWeight: "bold",
-              }}
-            >
-              Users
-            </Typography>
-            {/* <Item
-              title="Actors"
-              to="/actors"
-              icon={<PeopleOutlineIcon />} // New icon for actors
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Directors"
-              to="/directors"
-              icon={<CameraRollOutlinedIcon />} // New icon for directors
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Producers"
-              to="/producers"
-              icon={<CrewOutlinedIcon />} // New icon for crew
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Crew"
-              to="/crew"
-              icon={<CrewOutlinedIcon />} // New icon for crew
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* 
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{
-                m: "25px 0 5px 20px",
-                fontWeight: "bold",
-              }}
-            >
-              Subscription
-            </Typography>
-            <Item
-              title="Packages"
-              to="/packages"
-              icon={<SubscriptionIcon />} // New icon for subscription packages
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
           </Box>
         </Menu>
       </ProSidebar>
