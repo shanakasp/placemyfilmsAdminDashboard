@@ -9,6 +9,10 @@ import AddNewBlog from "./scenes/blogs/AddNewBlogs.jsx";
 import EditBlog from "./scenes/blogs/EditBlogs.jsx";
 import ViewBlogById from "./scenes/blogs/ViewBlogById.jsx";
 import Blogs from "./scenes/blogs/index.jsx";
+import AddCoupon from "./scenes/coupon/AddNewCoupon.jsx";
+import EditCoupon from "./scenes/coupon/EditCouponByID.jsx";
+import ViewCoupon from "./scenes/coupon/ViewCouponById.jsx";
+import Coupon from "./scenes/coupon/index.jsx";
 import Dashboard from "./scenes/dashboard";
 import EditAdminDetails from "./scenes/dashboard/EditAdminDetails.jsx";
 import ViewDirectorByID from "./scenes/directors/ViewDirector.jsx";
@@ -66,6 +70,11 @@ function App() {
                   element={<EditPackages />}
                 />
                 <Route path="/subscription/add" element={<AddPackages />} />
+
+                <Route path="/coupons" element={<Coupon />} />
+                <Route path="/coupon/view/:id" element={<ViewCoupon />} />
+                <Route path="/coupon/edit/:id" element={<EditCoupon />} />
+                <Route path="/coupon/add" element={<AddCoupon />} />
 
                 <Route path="/actors" element={<Actors />} />
                 <Route path="/directors" element={<Directors />} />

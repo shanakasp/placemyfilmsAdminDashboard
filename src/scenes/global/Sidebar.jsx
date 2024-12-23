@@ -113,7 +113,7 @@ const Sidebar = () => {
                 fontWeight: "bold",
               }}
             >
-              Blogs Area
+              Control Area
             </Typography>
             {/* <Item
               title="Pending Castings"
@@ -147,6 +147,13 @@ const Sidebar = () => {
             <Item
               title="Feedbacks"
               to="/feedback"
+              icon={<CameraRollOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Coupon"
+              to="/coupons"
               icon={<CameraRollOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
