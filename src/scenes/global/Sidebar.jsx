@@ -23,8 +23,8 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       active={selected === title}
       style={{
         color: colors.grey[100],
-        marginBottom: "15px", // Add margin-bottom
-        marginTop: "10px", // Add margin-top if needed
+        marginBottom: "15px",
+        marginTop: "10px",
       }}
       onClick={() => setSelected(title)}
       icon={icon}
