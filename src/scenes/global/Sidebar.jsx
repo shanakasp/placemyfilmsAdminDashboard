@@ -142,28 +142,28 @@ const Sidebar = () => {
             <Item
               title="Packages"
               to="/packages"
-              icon={<ViewListOutlinedIcon />} // New icon for Packages
+              icon={<ViewListOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Payments"
               to="/payments"
-              icon={<PaymentOutlinedIcon />} // New icon for Payments
+              icon={<PaymentOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Feedbacks"
               to="/feedback"
-              icon={<FeedbackOutlinedIcon />} // New icon for Feedbacks
+              icon={<FeedbackOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Coupon"
               to="/coupons"
-              icon={<LocalOfferOutlinedIcon />} // New icon for Coupons
+              icon={<LocalOfferOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
